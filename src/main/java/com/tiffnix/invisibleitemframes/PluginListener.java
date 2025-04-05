@@ -143,7 +143,7 @@ public class PluginListener implements Listener {
 
         final Block block = event.getClickedBlock();
         if (block != null) {
-            aboutToPlaceLocation = block.getLocation();
+            aboutToPlaceLocation = block.getRelative(event.getBlockFace()).getLocation();
             aboutToPlaceFace = event.getBlockFace();
         }
     }
