@@ -89,11 +89,6 @@ public final class InvisibleItemFrames extends JavaPlugin {
     }
 
     private ItemStack createItem(Material material, ConfigurationSection config) {
-        if (!config.getBoolean("enabled")) {
-            getLogger().info("Item " + config.getName() + " is disabled in the config");
-            return null;
-        }
-
         ItemStack item = new ItemStack(material, 1);
 
         ItemMeta meta = item.getItemMeta();
@@ -107,11 +102,6 @@ public final class InvisibleItemFrames extends JavaPlugin {
     }
 
     private void addRecipeFromConfig(NamespacedKey key, ConfigurationSection config, ItemStack item) {
-        if (!config.getBoolean("enabled")) {
-            getLogger().info("Recipe " + config.getName() + " is disabled in the config");
-            return;
-        }
-
         item = item.clone();
         item.setAmount(config.getInt("count"));
         ShapedRecipe recipe = new ShapedRecipe(key, item);
@@ -149,7 +139,6 @@ public final class InvisibleItemFrames extends JavaPlugin {
         ConfigurationSection legacyItemSection = config.getConfigurationSection("item");
         if (config.contains("item", true) && legacyItemSection != null) {
             config.createSection("items.invisible_item_frame", legacyItemSection.getValues(true));
-            config.set("items.invisible_item_frame.enabled", true);
             config.set("item", null);
             getLogger().info("Found legacy item section");
             migrateLegacy = true;
@@ -167,18 +156,14 @@ public final class InvisibleItemFrames extends JavaPlugin {
             saveConfig();
         }
 
-        config.addDefault("items.invisible_item_frame.enabled", true);
         config.addDefault("items.invisible_item_frame.name", ChatColor.RESET + "Invisible Item Frame");
 
-        config.addDefault("items.invisible_glow_item_frame.enabled", true);
         config.addDefault("items.invisible_glow_item_frame.name", ChatColor.RESET + "Invisible Glow Item Frame");
 
-        config.addDefault("recipes.invisible_item_frame.enabled", true);
         config.addDefault("recipes.invisible_item_frame.count", 8);
         config.addDefault("recipes.invisible_item_frame.shape", Arrays.asList("FFF", "F F", "FFF"));
         config.addDefault("recipes.invisible_item_frame.ingredients.F", "minecraft:item_frame");
 
-        config.addDefault("recipes.invisible_glow_item_frame.enabled", true);
         config.addDefault("recipes.invisible_glow_item_frame.count", 8);
         config.addDefault("recipes.invisible_glow_item_frame.shape", Arrays.asList("FFF", "F F", "FFF"));
         config.addDefault("recipes.invisible_glow_item_frame.ingredients.F", "minecraft:glow_item_frame");

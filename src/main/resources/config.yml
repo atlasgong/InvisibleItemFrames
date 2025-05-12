@@ -15,8 +15,6 @@ items:
 # Customization for the crafting recipe.
 recipes:
   invisible_item_frame:
-    # Whether the recipe should be usable.
-    enabled: true
 
     # Shape to use for crafting recipe. Spaces are empty slots, and for a smaller than 3x3 recipe you can use a smaller grid. Letters are interpreted by the ingredients list below.
     shape:
@@ -32,14 +30,10 @@ recipes:
     count: 8
 
   invisible_glow_item_frame:
-    enabled: true
-
     shape:
       - FFF
       - F F
       - FFF
-
     ingredients:
       F: minecraft:glow_item_frame
-
     count: 8
