@@ -6,9 +6,23 @@ A fast, minimal Spigot plugin that adds **craftable invisible item frames** to y
 
 See a full video demo here: https://youtu.be/2kLfRHyH5cc
 
-Item Frame Demo            |  Crafting Recipe
-:-------------------------:|:-------------------------:
-![demo of item frames](https://github.com/user-attachments/assets/0672ce90-f42c-4f5d-8b7d-fe04adf94f1d)  |  ![crafting recipe](https://github.com/user-attachments/assets/04ab7b6a-1c56-4f89-805d-cde3a6230389) This crafting recipe is configurable!
+<table width="100%">
+  <tr>
+    <th style="text-align: center;">Item Frame Demo</th>
+    <th style="text-align: center;">Crafting Recipe</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/0672ce90-f42c-4f5d-8b7d-fe04adf94f1d" width="100%">
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/04ab7b6a-1c56-4f89-805d-cde3a6230389" width="100%"><br>
+      This crafting recipe is configurable!
+    </td>
+  </tr>
+</table>
+
+
 
 ## Features
 - Adds invisible item frames you can craft and place like normal.
