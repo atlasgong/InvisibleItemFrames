@@ -13,10 +13,10 @@ See a full video demo here: https://youtu.be/2kLfRHyH5cc
   </tr>
   <tr>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/0672ce90-f42c-4f5d-8b7d-fe04adf94f1d" width="100%">
+      <img src="https://github.com/user-attachments/assets/0672ce90-f42c-4f5d-8b7d-fe04adf94f1d" alt="Item Frame Demo" width="100%">
     </td>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/04ab7b6a-1c56-4f89-805d-cde3a6230389" width="100%"><br>
+      <img src="https://github.com/user-attachments/assets/04ab7b6a-1c56-4f89-805d-cde3a6230389" alt="Crafting Recipe"  width="100%"><br>
       This crafting recipe is configurable!
     </td>
   </tr>
