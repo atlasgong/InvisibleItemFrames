@@ -1,10 +1,30 @@
 # Invisible Item Frames Lite
 
-Forked from [InvisibleItemFrames](https://github.com/tiffany352/InvisibleItemFrames) by [Tiffany Bennett (Tiffnix)](https://tiffnix.com/contact). A fast, minimal Spigot
-plugin that adds **craftable invisible item frames** to your server; no bloated configs, no commands or permissions,
-just drop it in and go.
+> Forked from [InvisibleItemFrames](https://github.com/tiffany352/InvisibleItemFrames) by [Tiffany Bennett (Tiffnix)](https://tiffnix.com/contact).
 
-## What It Does
+A fast, minimal Spigot plugin that adds **craftable invisible item frames** to your server; no bloated configs, no commands or permissions, just drop it in and go.
+
+See a full video demo here: https://youtu.be/2kLfRHyH5cc
+
+<table width="100%">
+  <tr>
+    <th style="text-align: center;">Item Frame Demo</th>
+    <th style="text-align: center;">Crafting Recipe</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/0672ce90-f42c-4f5d-8b7d-fe04adf94f1d" alt="Item Frame Demo" width="100%">
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/04ab7b6a-1c56-4f89-805d-cde3a6230389" alt="Crafting Recipe"  width="100%"><br>
+      This crafting recipe is configurable!
+    </td>
+  </tr>
+</table>
+
+
+
+## Features
 - Adds invisible item frames you can craft and place like normal.
 - Frames are visible when empty, and automatically turn invisible once an item is added.
 - Perfect for clean builds, displays, or shops without visual clutter.
@@ -12,7 +32,7 @@ just drop it in and go.
 This isn't a complex plugin; it's a natural extension of Minecraft’s core mechanics.
 
 ## Why This Version?
-This is an updated, stripped-down fork of the original InvisibleItemFrames plugin. We rebuilt this from a
+This is an updated, stripped-down fork of the original [InvisibleItemFrames](https://www.spigotmc.org/resources/invisible-item-frames.85365/) plugin. We rebuilt this from a
 feature-first mindset: keep the good idea, strip away the extra noise. Compared to the original:
 
 - Lightweight performance; tiny, fast, and focused.
@@ -38,7 +58,7 @@ shipped natively with vanilla.
 1. Download the plugin JAR here.
 2. Drop the plugin JAR into your `plugins/` folder.
 3. Restart your server.
-4. Craft your frames :)
+4. Craft your item frames :)
 
 ## Contributing
 
