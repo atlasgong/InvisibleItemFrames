@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -76,11 +75,6 @@ public final class InvisibleItemFrames extends JavaPlugin {
         GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
 
         getServer().getPluginManager().registerEvents(new PluginListener(), this);
-
-        final PluginCommand command = getServer().getPluginCommand("invisframes");
-        assert command != null;
-        command.setTabCompleter(new InvisFramesCompleter());
-        command.setExecutor(new InvisFramesCommand());
 
         saveDefaultConfig();
 

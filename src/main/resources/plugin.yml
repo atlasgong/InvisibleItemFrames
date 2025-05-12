@@ -5,11 +5,6 @@ api-version: 1.21
 description: Adds craftable invisible item frames for survival.
 authors:
   - Tiffnix
-commands:
-  invisframes:
-    description: Commands related to Invisible Item Frames.
-    usage: /invisframes [give|grant|reload]
-    permission: invisibleitemframes.command
 permissions:
   invisibleitemframes.craft:
     default: true
@@ -47,6 +42,3 @@ permissions:
   invisibleitemframes.interact.glow:
     default: true
     description: Whether players can interact (add/remove items, rotate) with invisible glow item frames.
-  invisibleitemframes.command:
-    default: op
-    description: Allows granting the recipe, giving the item, and reloading the config.
