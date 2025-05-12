@@ -4,6 +4,7 @@
 
 package com.atlasgong.invisibleitemframeslite;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -77,10 +78,13 @@ public final class InvisibleItemFrames extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PluginListener(), this);
 
         saveDefaultConfig();
-
         loadConfig();
 
         firstLoad = false;
+
+        // incl metrics for bStats
+        int pluginId = 25837;
+        @SuppressWarnings("unused") Metrics metrics = new Metrics(this, pluginId);
     }
 
     @Override
