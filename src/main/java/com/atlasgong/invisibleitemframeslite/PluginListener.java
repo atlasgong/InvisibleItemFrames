@@ -155,6 +155,14 @@ public class PluginListener implements Listener {
             return;
         }
 
+        // disallow using invisible item frames to craft themselves
+        for (ItemStack is : event.getInventory().getMatrix()) {
+            if (InvisibleItemFrames.isInvisibleItemFrame(is)) {
+                event.getInventory().setResult(new ItemStack(Material.AIR));
+                return;
+            }
+        }
+
         final HumanEntity entity = event.getView().getPlayer();
         final Boolean limitedCrafting = entity.getWorld().getGameRuleValue(GameRule.DO_LIMITED_CRAFTING);
         final boolean entityHasRecipe = entity.hasDiscoveredRecipe(InvisibleItemFrames.RECIPE_KEY);
