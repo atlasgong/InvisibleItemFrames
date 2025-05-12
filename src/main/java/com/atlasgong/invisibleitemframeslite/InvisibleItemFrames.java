@@ -135,27 +135,6 @@ public final class InvisibleItemFrames extends JavaPlugin {
     public void loadConfig() {
         final FileConfiguration config = getConfig();
 
-        boolean migrateLegacy = false;
-        ConfigurationSection legacyItemSection = config.getConfigurationSection("item");
-        if (config.contains("item", true) && legacyItemSection != null) {
-            config.createSection("items.invisible_item_frame", legacyItemSection.getValues(true));
-            config.set("item", null);
-            getLogger().info("Found legacy item section");
-            migrateLegacy = true;
-        }
-        ConfigurationSection legacyRecipeSection = config.getConfigurationSection("recipe");
-        if (config.contains("recipe", true) && legacyRecipeSection != null) {
-            config.createSection("recipes.invisible_item_frame", legacyRecipeSection.getValues(true));
-            config.set("recipe", null);
-            getLogger().info("Found legacy recipe section");
-            migrateLegacy = true;
-        }
-
-        if (migrateLegacy) {
-            getLogger().info("Converting config to new format");
-            saveConfig();
-        }
-
         config.addDefault("items.invisible_item_frame.name", ChatColor.RESET + "Invisible Item Frame");
 
         config.addDefault("items.invisible_glow_item_frame.name", ChatColor.RESET + "Invisible Glow Item Frame");
