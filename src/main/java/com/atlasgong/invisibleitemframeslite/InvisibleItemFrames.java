@@ -142,13 +142,16 @@ public final class InvisibleItemFrames extends JavaPlugin {
 
         config.addDefault("recipes.invisible_item_frame.count", 8);
         config.addDefault("recipes.invisible_item_frame.glint", true);
-        config.addDefault("recipes.invisible_item_frame.shape", Arrays.asList("FFF", "F F", "FFF"));
+        config.addDefault("recipes.invisible_item_frame.shape", Arrays.asList("FFF", "FAF", "FFF"));
         config.addDefault("recipes.invisible_item_frame.ingredients.F", "minecraft:item_frame");
+        config.addDefault("recipes.invisible_glow_item_frame.ingredients.A", "minecraft:phantom_membrane");
 
         config.addDefault("recipes.invisible_glow_item_frame.count", 8);
         config.addDefault("recipes.invisible_item_frame.glint", true);
-        config.addDefault("recipes.invisible_glow_item_frame.shape", Arrays.asList("FFF", "F F", "FFF"));
+        config.addDefault("recipes.invisible_glow_item_frame.shape", Arrays.asList("FFF", "FAF", "FFF"));
         config.addDefault("recipes.invisible_glow_item_frame.ingredients.F", "minecraft:glow_item_frame");
+        config.addDefault("recipes.invisible_glow_item_frame.ingredients.A", "minecraft:phantom_membrane");
+
 
         ConfigurationSection regularItem = config.getConfigurationSection("items.invisible_item_frame");
         assert regularItem != null;
