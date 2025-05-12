@@ -3,6 +3,8 @@ items:
   invisible_item_frame:
     # What the name of the item should be.
     name: §rInvisible Item Frame
+    # if the item should have an enchantment glint
+    enchantment_glint: true
 
     # Uncomment to assign lore text for the item.
     #lore:
@@ -11,6 +13,7 @@ items:
 
   invisible_glow_item_frame:
     name: §rInvisible Glow Item Frame
+    enchantment_glint: true
 
 # Customization for the crafting recipe.
 recipes:
