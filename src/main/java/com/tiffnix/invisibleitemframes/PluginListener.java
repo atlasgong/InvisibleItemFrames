@@ -4,9 +4,6 @@
 
 package com.tiffnix.invisibleitemframes;
 
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,7 +22,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.projectiles.ProjectileSource;
 
 public class PluginListener implements Listener {
     Location aboutToPlaceLocation = null;
@@ -55,9 +51,8 @@ public class PluginListener implements Listener {
     }
 
     /**
-     * Enforces the invisibleitemframes.break permission and stores a note of the
-     * tick an item frame was broken in for when the item drop spawns. Since there's
-     * no drops list on the event.
+     * Stores a note of the tick an item frame was broken in for when the item
+     * drop spawns. Since there's no drops list on the event.
      */
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent event) {
@@ -66,23 +61,6 @@ public class PluginListener implements Listener {
         final boolean isFrame = InvisibleItemFrames.isInvisibleItemFrame(entity);
         Entity remover = event.getRemover();
         if (remover == null) {
-            return;
-        }
-
-        // Treat projectiles shot by living beings as having the same permissions as
-        // the entity that shot them.
-        if (remover instanceof Projectile) {
-            final Projectile projectile = (Projectile) remover;
-            final ProjectileSource shooter = projectile.getShooter();
-            if (shooter instanceof LivingEntity) {
-                remover = (LivingEntity) shooter;
-            }
-        }
-
-        String permissionForType = entity.getType() == EntityType.ITEM_FRAME ? "invisibleitemframes.break.normal" : "invisibleitemframes.break.glow";
-        final boolean hasPermission = remover.hasPermission("invisibleitemframes.break") && remover.hasPermission(permissionForType);
-        if (isFrame && !hasPermission) {
-            event.setCancelled(true);
             return;
         }
 
@@ -127,20 +105,6 @@ public class PluginListener implements Listener {
             return;
         }
 
-        final Player player = event.getPlayer();
-        String permissionForType = item.getType() == Material.ITEM_FRAME ? "invisibleitemframes.place.normal" : "invisibleitemframes.place.glow";
-        if (!player.hasPermission("invisibleitemframes.place") || !player.hasPermission(permissionForType)) {
-            final String message = "You don't have permission to place these.";
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                    TextComponent.fromLegacyText(message, ChatColor.RED));
-
-            event.setUseItemInHand(Event.Result.DENY);
-            // Item is consumed if useItemInHand is set to DENY, so cancel the event to
-            // prevent that.
-            event.setCancelled(true);
-            return;
-        }
-
         final Block block = event.getClickedBlock();
         if (block != null) {
             aboutToPlaceLocation = block.getRelative(event.getBlockFace()).getLocation();
@@ -160,13 +124,6 @@ public class PluginListener implements Listener {
         }
 
         final ItemFrame frame = (ItemFrame) entity;
-
-        String permissionForType = entity.getType() == EntityType.ITEM_FRAME ? "invisibleitemframes.interact.normal" : "invisibleitemframes.interact.glow";
-        if (!event.getPlayer().hasPermission("invisibleitemframes.interact") || !event.getPlayer().hasPermission(permissionForType)) {
-            event.setCancelled(true);
-            return;
-        }
-
         new ItemFrameUpdateRunnable(frame).runTask(InvisibleItemFrames.INSTANCE);
     }
 
@@ -182,13 +139,6 @@ public class PluginListener implements Listener {
         }
 
         final ItemFrame frame = (ItemFrame) entity;
-
-        String permissionForType = entity.getType() == EntityType.ITEM_FRAME ? "invisibleitemframes.interact.normal" : "invisibleitemframes.interact.glow";
-        if (!event.getDamager().hasPermission("invisibleitemframes.interact") || !event.getDamager().hasPermission(permissionForType)) {
-            event.setCancelled(true);
-            return;
-        }
-
         new ItemFrameUpdateRunnable(frame).runTask(InvisibleItemFrames.INSTANCE);
     }
 
@@ -206,13 +156,6 @@ public class PluginListener implements Listener {
         }
 
         final HumanEntity entity = event.getView().getPlayer();
-
-        String permissionForType = event.getInventory().getResult().getType() == Material.ITEM_FRAME ? "invisibleitemframes.craft.normal" : "invisibleitemframes.craft.glow";
-        if (!entity.hasPermission("invisibleitemframes.craft") || !entity.hasPermission(permissionForType)) {
-            event.getInventory().setResult(new ItemStack(Material.AIR));
-            return;
-        }
-
         final Boolean limitedCrafting = entity.getWorld().getGameRuleValue(GameRule.DO_LIMITED_CRAFTING);
         final boolean entityHasRecipe = entity.hasDiscoveredRecipe(InvisibleItemFrames.RECIPE_KEY);
         if (Boolean.TRUE.equals(limitedCrafting) && !entityHasRecipe) {
