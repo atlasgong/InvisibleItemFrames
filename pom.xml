@@ -4,7 +4,7 @@
 
     <groupId>com.atlasgong</groupId>
     <artifactId>InvisibleItemFramesLite</artifactId>
-    <version>2.0.0-beta.3</version>
+    <version>2.0.0-beta.4</version>
     <packaging>jar</packaging>
 
     <name>InvisibleItemFramesLite</name>
