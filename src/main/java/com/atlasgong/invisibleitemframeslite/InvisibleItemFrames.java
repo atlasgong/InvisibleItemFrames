@@ -92,8 +92,8 @@ public final class InvisibleItemFrames extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    private ItemStack createItem(Material material, String name, List<String> lore, boolean enchantmentGlint) {
-        ItemStack item = new ItemStack(material, 1);
+    private ItemStack createItem(String name, List<String> lore, boolean enchantmentGlint, boolean glow) {
+        ItemStack item = new ItemStack(glow ? Material.ITEM_FRAME : Material.GLOW_ITEM_FRAME, 1);
 
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
@@ -104,6 +104,10 @@ public final class InvisibleItemFrames extends JavaPlugin {
         item.setItemMeta(meta);
 
         return item;
+    }
+
+    private ItemStack createItem(String name, List<String> lore, boolean enchantmentGlint) {
+        return createItem(name, lore, enchantmentGlint, false);
     }
 
     private void addRecipeFromConfig(NamespacedKey key, ConfigurationSection config, ItemStack item) {
@@ -162,14 +166,14 @@ public final class InvisibleItemFrames extends JavaPlugin {
         String rName = regularItem.getString("name");
         List<String> rLore = regularItem.getStringList("lore");
         boolean rEnchantmentGlint = regularItem.getBoolean("enchantment_glint");
-        INVISIBLE_FRAME = createItem(Material.ITEM_FRAME, rName, rLore, rEnchantmentGlint);
+        INVISIBLE_FRAME = createItem(rName, rLore, rEnchantmentGlint);
 
         ConfigurationSection glowItem = config.getConfigurationSection("items.invisible_glow_item_frame");
         assert glowItem != null;
         String gName = glowItem.getString("name");
         List<String> gLore = glowItem.getStringList("lore");
         boolean gEnchantmentGlint = glowItem.getBoolean("enchantment_glint");
-        INVISIBLE_GLOW_FRAME = createItem(Material.GLOW_ITEM_FRAME, gName, gLore, gEnchantmentGlint);
+        INVISIBLE_GLOW_FRAME = createItem(gName, gLore, gEnchantmentGlint, true);
 
         ConfigurationSection regularRecipe = config.getConfigurationSection("recipes.invisible_item_frame");
         assert regularRecipe != null;
