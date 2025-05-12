@@ -88,13 +88,14 @@ public final class InvisibleItemFrames extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    private ItemStack createItem(Material material, ConfigurationSection config) {
+    private ItemStack createItem(Material material, String name, List<String> lore, boolean enchantmentGlint) {
         ItemStack item = new ItemStack(material, 1);
 
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setDisplayName(config.getString("name"));
-        meta.setLore(config.getStringList("lore"));
+        meta.setDisplayName(name);
+        meta.setLore(lore);
+        meta.setEnchantmentGlintOverride(enchantmentGlint ? true : null);
         meta.getPersistentDataContainer().set(IS_INVISIBLE_KEY, PersistentDataType.BYTE, (byte) 1);
         item.setItemMeta(meta);
 
@@ -140,11 +141,13 @@ public final class InvisibleItemFrames extends JavaPlugin {
         config.addDefault("items.invisible_glow_item_frame.name", ChatColor.RESET + "Invisible Glow Item Frame");
 
         config.addDefault("recipes.invisible_item_frame.count", 8);
+        config.addDefault("recipes.invisible_item_frame.glint", true);
         config.addDefault("recipes.invisible_item_frame.shape", Arrays.asList("FFF", "FAF", "FFF"));
         config.addDefault("recipes.invisible_item_frame.ingredients.F", "minecraft:item_frame");
         config.addDefault("recipes.invisible_glow_item_frame.ingredients.A", "minecraft:phantom_membrane");
 
         config.addDefault("recipes.invisible_glow_item_frame.count", 8);
+        config.addDefault("recipes.invisible_item_frame.glint", true);
         config.addDefault("recipes.invisible_glow_item_frame.shape", Arrays.asList("FFF", "FAF", "FFF"));
         config.addDefault("recipes.invisible_glow_item_frame.ingredients.F", "minecraft:glow_item_frame");
         config.addDefault("recipes.invisible_glow_item_frame.ingredients.A", "minecraft:phantom_membrane");
@@ -152,11 +155,17 @@ public final class InvisibleItemFrames extends JavaPlugin {
 
         ConfigurationSection regularItem = config.getConfigurationSection("items.invisible_item_frame");
         assert regularItem != null;
-        INVISIBLE_FRAME = createItem(Material.ITEM_FRAME, regularItem);
+        String rName = regularItem.getString("name");
+        List<String> rLore = regularItem.getStringList("lore");
+        boolean rEnchantmentGlint = regularItem.getBoolean("enchantment_glint");
+        INVISIBLE_FRAME = createItem(Material.ITEM_FRAME, rName, rLore, rEnchantmentGlint);
 
         ConfigurationSection glowItem = config.getConfigurationSection("items.invisible_glow_item_frame");
         assert glowItem != null;
-        INVISIBLE_GLOW_FRAME = createItem(Material.GLOW_ITEM_FRAME, glowItem);
+        String gName = glowItem.getString("name");
+        List<String> gLore = glowItem.getStringList("lore");
+        boolean gEnchantmentGlint = glowItem.getBoolean("enchantment_glint");
+        INVISIBLE_GLOW_FRAME = createItem(Material.GLOW_ITEM_FRAME, gName, gLore, gEnchantmentGlint);
 
         ConfigurationSection regularRecipe = config.getConfigurationSection("recipes.invisible_item_frame");
         assert regularRecipe != null;
