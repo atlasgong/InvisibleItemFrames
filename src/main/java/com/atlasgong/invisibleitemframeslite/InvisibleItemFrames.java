@@ -95,6 +95,7 @@ public final class InvisibleItemFrames extends JavaPlugin {
         assert meta != null;
         meta.setDisplayName(config.getString("name"));
         meta.setLore(config.getStringList("lore"));
+        meta.setEnchantmentGlintOverride(true);
         meta.getPersistentDataContainer().set(IS_INVISIBLE_KEY, PersistentDataType.BYTE, (byte) 1);
         item.setItemMeta(meta);
 
