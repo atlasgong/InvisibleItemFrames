@@ -93,7 +93,7 @@ public final class InvisibleItemFrames extends JavaPlugin {
     }
 
     private ItemStack createItem(String name, List<String> lore, boolean enchantmentGlint, boolean glow) {
-        ItemStack item = new ItemStack(glow ? Material.ITEM_FRAME : Material.GLOW_ITEM_FRAME, 1);
+        ItemStack item = new ItemStack(glow ? Material.GLOW_ITEM_FRAME : Material.ITEM_FRAME, 1);
 
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
