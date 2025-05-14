@@ -11,12 +11,9 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
@@ -25,60 +22,25 @@ import java.util.Map;
 
 public final class InvisibleItemFrames extends JavaPlugin {
     public static InvisibleItemFrames INSTANCE;
-    public static NamespacedKey IS_INVISIBLE_KEY;
     public static NamespacedKey RECIPE_KEY;
     public static NamespacedKey GLOW_RECIPE_KEY;
     public static ItemStack INVISIBLE_FRAME;
     public static ItemStack INVISIBLE_GLOW_FRAME;
     private static boolean firstLoad = true;
 
-    /**
-     * Returns whether the given ItemStack is an invisible item frame item.
-     *
-     * @param item The stack to test.
-     * @return Whether the item stack is an invisible item frame item.
-     */
-    public static boolean isInvisibleItemFrame(ItemStack item) {
-        if (item == null) {
-            return false;
-        }
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            return false;
-        }
-        return meta.getPersistentDataContainer().has(IS_INVISIBLE_KEY, PersistentDataType.BYTE);
-    }
-
-    /**
-     * Returns whether the given Entity is an ItemFrame which should become
-     * invisible when it has an item.
-     *
-     * @param entity The entity to test.
-     * @return Whether it is an invisible item frame entity.
-     */
-    public static boolean isInvisibleItemFrame(Entity entity) {
-        if (entity == null) {
-            return false;
-        }
-        final EntityType type = entity.getType();
-        if (type != EntityType.ITEM_FRAME && type != EntityType.GLOW_ITEM_FRAME) {
-            return false;
-        }
-        return entity.getPersistentDataContainer().has(IS_INVISIBLE_KEY, PersistentDataType.BYTE);
-    }
-
     @Override
     public void onEnable() {
         INSTANCE = this;
 
-        IS_INVISIBLE_KEY = new NamespacedKey(this, "invisible");
+        NamespacedKey isInvisibleKey = new NamespacedKey(this, "invisible");
         RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
         GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
 
-        getServer().getPluginManager().registerEvents(new PluginListener(), this);
+        PluginManager pm = this.getServer().getPluginManager();
+        pm.registerEvents(new PluginListener(isInvisibleKey), this);
 
         saveDefaultConfig();
-        loadConfig();
+        loadConfig(isInvisibleKey);
 
         firstLoad = false;
 
@@ -90,24 +52,6 @@ public final class InvisibleItemFrames extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-    }
-
-    private ItemStack createItem(String name, List<String> lore, boolean enchantmentGlint, boolean glow) {
-        ItemStack item = new ItemStack(glow ? Material.GLOW_ITEM_FRAME : Material.ITEM_FRAME, 1);
-
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(name);
-        meta.setLore(lore);
-        meta.setEnchantmentGlintOverride(enchantmentGlint ? true : null);
-        meta.getPersistentDataContainer().set(IS_INVISIBLE_KEY, PersistentDataType.BYTE, (byte) 1);
-        item.setItemMeta(meta);
-
-        return item;
-    }
-
-    private ItemStack createItem(String name, List<String> lore, boolean enchantmentGlint) {
-        return createItem(name, lore, enchantmentGlint, false);
     }
 
     private void addRecipeFromConfig(NamespacedKey key, ConfigurationSection config, ItemStack item) {
@@ -141,7 +85,7 @@ public final class InvisibleItemFrames extends JavaPlugin {
         }
     }
 
-    public void loadConfig() {
+    public void loadConfig(NamespacedKey isInvisibleKey) {
         final FileConfiguration config = getConfig();
 
         config.addDefault("items.invisible_item_frame.name", ChatColor.RESET + "Invisible Item Frame");
@@ -166,14 +110,14 @@ public final class InvisibleItemFrames extends JavaPlugin {
         String rName = regularItem.getString("name");
         List<String> rLore = regularItem.getStringList("lore");
         boolean rEnchantmentGlint = regularItem.getBoolean("enchantment_glint");
-        INVISIBLE_FRAME = createItem(rName, rLore, rEnchantmentGlint);
+        INVISIBLE_FRAME = Utils.createItem(isInvisibleKey, rName, rLore, rEnchantmentGlint);
 
         ConfigurationSection glowItem = config.getConfigurationSection("items.invisible_glow_item_frame");
         assert glowItem != null;
         String gName = glowItem.getString("name");
         List<String> gLore = glowItem.getStringList("lore");
         boolean gEnchantmentGlint = glowItem.getBoolean("enchantment_glint");
-        INVISIBLE_GLOW_FRAME = createItem(gName, gLore, gEnchantmentGlint, true);
+        INVISIBLE_GLOW_FRAME = Utils.createItem(isInvisibleKey, gName, gLore, gEnchantmentGlint, true);
 
         ConfigurationSection regularRecipe = config.getConfigurationSection("recipes.invisible_item_frame");
         assert regularRecipe != null;
