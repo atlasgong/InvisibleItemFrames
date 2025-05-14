@@ -13,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Utils {
 
@@ -67,7 +68,7 @@ public class Utils {
         ItemStack item = new ItemStack(glow ? Material.GLOW_ITEM_FRAME : Material.ITEM_FRAME, 1);
 
         ItemMeta meta = item.getItemMeta();
-        assert meta != null;
+        Objects.requireNonNull(meta, "ItemMeta was unexpectedly null for: " + item.getType());
         meta.setDisplayName(name);
         meta.setLore(lore);
         meta.setEnchantmentGlintOverride(enchantmentGlint ? true : null);
