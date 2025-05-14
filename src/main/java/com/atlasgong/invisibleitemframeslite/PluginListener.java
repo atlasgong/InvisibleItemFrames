@@ -7,6 +7,7 @@ package com.atlasgong.invisibleitemframeslite;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -24,10 +25,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public class PluginListener implements Listener {
+    private final NamespacedKey isInvisibleKey;
+
     Location aboutToPlaceLocation = null;
     BlockFace aboutToPlaceFace = null;
 
     long hangingBrokenAtTick = -1;
+
+
+    public PluginListener(NamespacedKey isInvisibleKey) {
+        this.isInvisibleKey = isInvisibleKey;
+    }
 
     /**
      * Listens for an item frame entity being created from an item that was tagged
@@ -45,7 +53,7 @@ public class PluginListener implements Listener {
         if (location.equals(aboutToPlaceLocation) && face == aboutToPlaceFace) {
             aboutToPlaceLocation = null;
             aboutToPlaceFace = null;
-            event.getEntity().getPersistentDataContainer().set(InvisibleItemFrames.IS_INVISIBLE_KEY,
+            event.getEntity().getPersistentDataContainer().set(isInvisibleKey,
                     PersistentDataType.BYTE, (byte) 1);
         }
     }
@@ -58,7 +66,7 @@ public class PluginListener implements Listener {
     public void onHangingBreak(HangingBreakByEntityEvent event) {
         final Hanging entity = event.getEntity();
 
-        final boolean isFrame = InvisibleItemFrames.isInvisibleItemFrame(entity);
+        final boolean isFrame = Utils.isInvisibleItemFrame(entity, isInvisibleKey);
         Entity remover = event.getRemover();
         if (remover == null) {
             return;
@@ -101,7 +109,7 @@ public class PluginListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         final ItemStack item = event.getItem();
 
-        if (!InvisibleItemFrames.isInvisibleItemFrame(item) || event.useItemInHand() == Event.Result.DENY) {
+        if (!Utils.isInvisibleItemFrame(item, isInvisibleKey) || event.useItemInHand() == Event.Result.DENY) {
             return;
         }
 
@@ -119,7 +127,7 @@ public class PluginListener implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         final Entity entity = event.getRightClicked();
-        if (!InvisibleItemFrames.isInvisibleItemFrame(entity)) {
+        if (!Utils.isInvisibleItemFrame(entity, isInvisibleKey)) {
             return;
         }
 
@@ -134,7 +142,7 @@ public class PluginListener implements Listener {
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
         final Entity entity = event.getEntity();
-        if (!InvisibleItemFrames.isInvisibleItemFrame(entity)) {
+        if (!Utils.isInvisibleItemFrame(entity, isInvisibleKey)) {
             return;
         }
 
@@ -151,13 +159,13 @@ public class PluginListener implements Listener {
         // event.getRecipe() is not the same object as the Recipe you pass to addRecipe.
         // So this ugly hack is required of checking the craft result for whether it's
         // the item to be crafted.
-        if (!InvisibleItemFrames.isInvisibleItemFrame(event.getInventory().getResult())) {
+        if (!Utils.isInvisibleItemFrame(event.getInventory().getResult(), isInvisibleKey)) {
             return;
         }
 
         // disallow using invisible item frames to craft themselves
         for (ItemStack is : event.getInventory().getMatrix()) {
-            if (InvisibleItemFrames.isInvisibleItemFrame(is)) {
+            if (Utils.isInvisibleItemFrame(is, isInvisibleKey)) {
                 event.getInventory().setResult(new ItemStack(Material.AIR));
                 return;
             }
