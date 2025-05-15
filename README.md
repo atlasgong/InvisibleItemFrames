@@ -55,7 +55,7 @@ shipped natively with vanilla.
 
 
 ## Installation
-1. Download the plugin JAR here.
+1. Download the plugin JAR on [SpigotMC](https://www.spigotmc.org/resources/invisibleitemframeslite.124973/).
 2. Drop the plugin JAR into your `plugins/` folder.
 3. Restart your server.
 4. Craft your item frames :)
