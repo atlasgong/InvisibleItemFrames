@@ -13,6 +13,10 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class Utils {
 
+    private Utils() {
+        throw new AssertionError("Utils should not be instantiated.");
+    }
+
     /**
      * Returns whether the given ItemStack is an invisible item frame item.
      *
