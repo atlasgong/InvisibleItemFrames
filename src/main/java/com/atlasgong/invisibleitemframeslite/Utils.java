@@ -6,7 +6,7 @@ package com.atlasgong.invisibleitemframeslite;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -18,38 +18,30 @@ public class Utils {
     }
 
     /**
-     * Returns whether the given ItemStack is an invisible item frame item.
+     * Checks if the given ItemStack represents one of this plugin’s invisible item-frame items.
      *
-     * @param item The stack to check.
-     * @return Whether the item stack is an invisible item frame item.
+     * @param item           the ItemStack to test; may be null
+     * @param isInvisibleKey the NamespacedKey used to mark invisibility in its PersistentDataContainer
+     * @return true if the item is non-null, has metadata, and carries the invisibility marker; false otherwise
      */
     public static boolean isInvisibleItemFrame(ItemStack item, NamespacedKey isInvisibleKey) {
-        if (item == null) {
-            return false;
-        }
+        if (item == null) return false;
         ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            return false;
-        }
+        if (meta == null) return false;
         return meta.getPersistentDataContainer().has(isInvisibleKey, PersistentDataType.BYTE);
     }
 
     /**
-     * Returns whether the given entity is an item frame
-     * which will become invisible when it has an item.
+     * Checks if the given Entity is an item frame (regular or glowing)
+     * that has been marked as invisible by this plugin.
      *
-     * @param entity The entity to check.
-     * @return Whether the entity is an invisible item frame.
+     * @param entity         the Entity to test; may be null or of any type
+     * @param isInvisibleKey the NamespacedKey used to mark invisibility in its PersistentDataContainer
+     * @return true if the entity is an ItemFrame and carries the invisibility marker; false otherwise
      */
     public static boolean isInvisibleItemFrame(Entity entity, NamespacedKey isInvisibleKey) {
-        if (entity == null) {
-            return false;
-        }
-        final EntityType type = entity.getType();
-        if (type != EntityType.ITEM_FRAME && type != EntityType.GLOW_ITEM_FRAME) {
-            return false;
-        }
-        return entity.getPersistentDataContainer().has(isInvisibleKey, PersistentDataType.BYTE);
+        return entity instanceof ItemFrame && entity.getPersistentDataContainer().has(isInvisibleKey,
+                PersistentDataType.BYTE);
     }
 
 }
