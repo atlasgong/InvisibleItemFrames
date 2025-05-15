@@ -4,6 +4,8 @@
 
 package com.atlasgong.invisibleitemframeslite;
 
+import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactory;
+import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactoryProvider;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,6 +30,8 @@ public final class InvisibleItemFrames extends JavaPlugin {
     public static ItemStack INVISIBLE_GLOW_FRAME;
     private static boolean firstLoad = true;
 
+    private ItemFrameFactory frameFactory;
+
     @Override
     public void onEnable() {
         INSTANCE = this;
@@ -35,6 +39,8 @@ public final class InvisibleItemFrames extends JavaPlugin {
         NamespacedKey isInvisibleKey = new NamespacedKey(this, "invisible");
         RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
         GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
+
+        frameFactory = ItemFrameFactoryProvider.get();
 
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(new PluginListener(isInvisibleKey), this);
@@ -47,11 +53,6 @@ public final class InvisibleItemFrames extends JavaPlugin {
         // incl metrics for bStats
         int pluginId = 25837;
         @SuppressWarnings("unused") Metrics metrics = new Metrics(this, pluginId);
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
     }
 
     private void addRecipeFromConfig(NamespacedKey key, ConfigurationSection config, ItemStack item) {
@@ -110,14 +111,14 @@ public final class InvisibleItemFrames extends JavaPlugin {
         String rName = regularItem.getString("name");
         List<String> rLore = regularItem.getStringList("lore");
         boolean rEnchantmentGlint = regularItem.getBoolean("enchantment_glint");
-        INVISIBLE_FRAME = Utils.createItem(isInvisibleKey, rName, rLore, rEnchantmentGlint);
+        INVISIBLE_FRAME = frameFactory.create(isInvisibleKey, rName, rLore, rEnchantmentGlint, false);
 
         ConfigurationSection glowItem = config.getConfigurationSection("items.invisible_glow_item_frame");
         assert glowItem != null;
         String gName = glowItem.getString("name");
         List<String> gLore = glowItem.getStringList("lore");
         boolean gEnchantmentGlint = glowItem.getBoolean("enchantment_glint");
-        INVISIBLE_GLOW_FRAME = Utils.createItem(isInvisibleKey, gName, gLore, gEnchantmentGlint, true);
+        INVISIBLE_GLOW_FRAME = frameFactory.create(isInvisibleKey, gName, gLore, gEnchantmentGlint, true);
 
         ConfigurationSection regularRecipe = config.getConfigurationSection("recipes.invisible_item_frame");
         assert regularRecipe != null;
