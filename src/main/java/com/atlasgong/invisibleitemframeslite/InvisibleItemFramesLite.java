@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public final class InvisibleItemFrames extends JavaPlugin {
-    public static InvisibleItemFrames INSTANCE;
+public final class InvisibleItemFramesLite extends JavaPlugin {
+    public static InvisibleItemFramesLite INSTANCE;
     public static NamespacedKey RECIPE_KEY;
     public static NamespacedKey GLOW_RECIPE_KEY;
     public static ItemStack INVISIBLE_FRAME;

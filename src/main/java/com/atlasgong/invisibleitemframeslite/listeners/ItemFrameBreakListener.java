@@ -4,7 +4,7 @@
 
 package com.atlasgong.invisibleitemframeslite.listeners;
 
-import com.atlasgong.invisibleitemframeslite.InvisibleItemFrames;
+import com.atlasgong.invisibleitemframeslite.InvisibleItemFramesLite;
 import com.atlasgong.invisibleitemframeslite.Utils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -73,9 +73,9 @@ public class ItemFrameBreakListener implements Listener {
             return;
         }
         if (stack.getType() == Material.ITEM_FRAME) {
-            stack.setItemMeta(InvisibleItemFrames.INVISIBLE_FRAME.getItemMeta());
+            stack.setItemMeta(InvisibleItemFramesLite.INVISIBLE_FRAME.getItemMeta());
         } else if (stack.getType() == Material.GLOW_ITEM_FRAME) {
-            stack.setItemMeta(InvisibleItemFrames.INVISIBLE_GLOW_FRAME.getItemMeta());
+            stack.setItemMeta(InvisibleItemFramesLite.INVISIBLE_GLOW_FRAME.getItemMeta());
         } else {
             return;
         }

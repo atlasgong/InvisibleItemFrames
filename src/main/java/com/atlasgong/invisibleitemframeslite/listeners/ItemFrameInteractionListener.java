@@ -1,6 +1,6 @@
 package com.atlasgong.invisibleitemframeslite.listeners;
 
-import com.atlasgong.invisibleitemframeslite.InvisibleItemFrames;
+import com.atlasgong.invisibleitemframeslite.InvisibleItemFramesLite;
 import com.atlasgong.invisibleitemframeslite.Utils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -47,7 +47,7 @@ public class ItemFrameInteractionListener implements Listener {
         }
 
         final ItemFrame frame = (ItemFrame) entity;
-        new ItemFrameUpdateRunnable(frame).runTask(InvisibleItemFrames.INSTANCE);
+        new ItemFrameUpdateRunnable(frame).runTask(InvisibleItemFramesLite.INSTANCE);
     }
 
 
@@ -63,7 +63,7 @@ public class ItemFrameInteractionListener implements Listener {
         }
 
         final ItemFrame frame = (ItemFrame) entity;
-        new ItemFrameUpdateRunnable(frame).runTask(InvisibleItemFrames.INSTANCE);
+        new ItemFrameUpdateRunnable(frame).runTask(InvisibleItemFramesLite.INSTANCE);
     }
 
 
