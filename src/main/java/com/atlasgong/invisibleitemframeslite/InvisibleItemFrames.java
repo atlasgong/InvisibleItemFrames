@@ -6,6 +6,7 @@ package com.atlasgong.invisibleitemframeslite;
 
 import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactory;
 import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactoryProvider;
+import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameBreakListener;
 import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameCraftListener;
 import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameInteractionListener;
 import com.atlasgong.invisibleitemframeslite.listeners.ItemFramePlaceListener;
@@ -49,8 +50,8 @@ public final class InvisibleItemFrames extends JavaPlugin {
 
         // register listeners
         PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new PluginListener(isInvisibleKey), this);
         pm.registerEvents(new ItemFramePlaceListener(isInvisibleKey), this);
+        pm.registerEvents(new ItemFrameBreakListener(isInvisibleKey), this);
         pm.registerEvents(new ItemFrameInteractionListener(isInvisibleKey), this);
         pm.registerEvents(new ItemFrameCraftListener(isInvisibleKey), this);
 

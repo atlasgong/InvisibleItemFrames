@@ -2,8 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-package com.atlasgong.invisibleitemframeslite;
+package com.atlasgong.invisibleitemframeslite.listeners;
 
+import com.atlasgong.invisibleitemframeslite.InvisibleItemFrames;
+import com.atlasgong.invisibleitemframeslite.Utils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -15,18 +17,32 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class PluginListener implements Listener {
+/**
+ * Listener that restores invisibility to item frame items when they are broken and dropped.
+ * Spigot does not link item drops to the hanging entity directly, so this class tracks
+ * the tick when an invisible item frame is broken and modifies the matching drop.
+ */
+public class ItemFrameBreakListener implements Listener {
+
+    /** Key used to tag item frames as invisible via persistent data. */
     private final NamespacedKey isInvisibleKey;
 
+    /** World tick when an invisible item frame was last broken. Used to identify the drop. */
     long hangingBrokenAtTick = -1;
 
-    public PluginListener(NamespacedKey isInvisibleKey) {
+    /**
+     * Constructs a new ItemFrameBreakListener.
+     *
+     * @param isInvisibleKey The {@link NamespacedKey} used to identify invisible item frames.
+     */
+    public ItemFrameBreakListener(NamespacedKey isInvisibleKey) {
         this.isInvisibleKey = isInvisibleKey;
     }
 
     /**
-     * Stores a note of the tick an item frame was broken in for when the item
-     * drop spawns. Since there's no drops list on the event.
+     * Records the current tick if an invisible item frame is broken.
+     * This allows tracking when the corresponding dropped item appears,
+     * since Spigot doesn't provide drop data in the break event.
      */
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent event) {
@@ -44,9 +60,9 @@ public class PluginListener implements Listener {
     }
 
     /**
-     * Since there's no connection between HangingBreakByEntityEvent and the items
-     * created, this separate handler checks a saved value for whether to turn the
-     * dropped item into an invisible item frame.
+     * Detects when an item is spawned and checks if it’s the result of an invisible item frame breaking.
+     * If the tick matches the previously stored value, applies the correct invisible item frame metadata
+     * to preserve its invisibility after dropping.
      */
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event) {
@@ -66,6 +82,5 @@ public class PluginListener implements Listener {
         hangingBrokenAtTick = -1;
         entity.setItemStack(stack);
     }
-
 
 }
