@@ -5,54 +5,25 @@
 package com.atlasgong.invisibleitemframeslite;
 
 import org.bukkit.GameRule;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 
 public class PluginListener implements Listener {
     private final NamespacedKey isInvisibleKey;
 
-    Location aboutToPlaceLocation = null;
-    BlockFace aboutToPlaceFace = null;
-
     long hangingBrokenAtTick = -1;
-
 
     public PluginListener(NamespacedKey isInvisibleKey) {
         this.isInvisibleKey = isInvisibleKey;
-    }
-
-    /**
-     * Listens for an item frame entity being created from an item that was tagged
-     * as invisible, so that the new entity can also be tagged.
-     */
-    @EventHandler
-    public void onHangingPlace(HangingPlaceEvent event) {
-        if (!(event.getEntity() instanceof ItemFrame frame)) return;
-        final Location location = event.getBlock().getLocation();
-        final BlockFace face = event.getBlockFace();
-
-        if (location.equals(aboutToPlaceLocation) && face == aboutToPlaceFace) {
-            aboutToPlaceLocation = null;
-            aboutToPlaceFace = null;
-            frame.getPersistentDataContainer().set(isInvisibleKey,
-                    PersistentDataType.BYTE, (byte) 1);
-        }
     }
 
     /**
@@ -98,24 +69,6 @@ public class PluginListener implements Listener {
         entity.setItemStack(stack);
     }
 
-    /**
-     * Listens to player right clicking an item, because HangingPlaceEvent does not
-     * say which item was used to create the hanging entity.
-     */
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        final ItemStack item = event.getItem();
-
-        if (!Utils.isInvisibleItemFrame(item, isInvisibleKey) || event.useItemInHand() == Event.Result.DENY) {
-            return;
-        }
-
-        final Block block = event.getClickedBlock();
-        if (block != null) {
-            aboutToPlaceLocation = block.getRelative(event.getBlockFace()).getLocation();
-            aboutToPlaceFace = event.getBlockFace();
-        }
-    }
 
     /**
      * Whenever the player right clicks on an item frame, it potentially needs to
