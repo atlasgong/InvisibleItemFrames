@@ -46,14 +46,14 @@ public class ItemFramePlaceListener implements Listener {
      */
     @EventHandler
     public void onHangingPlace(HangingPlaceEvent event) {
-        if (!(event.getEntity() instanceof ItemFrame frame)) return;
+        if (!(event.getEntity() instanceof ItemFrame)) return;
         final Location loc = event.getBlock().getLocation();
         final BlockFace face = event.getBlockFace();
 
         if (loc.equals(aboutToPlaceLocation) && face == aboutToPlaceFace) {
             aboutToPlaceLocation = null;
             aboutToPlaceFace = null;
-            frame.getPersistentDataContainer().set(isInvisibleKey,
+            event.getEntity().getPersistentDataContainer().set(isInvisibleKey,
                     PersistentDataType.BYTE, (byte) 1);
         }
     }
