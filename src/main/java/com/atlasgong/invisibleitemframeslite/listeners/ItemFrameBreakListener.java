@@ -74,7 +74,10 @@ public class ItemFrameBreakListener implements Listener {
         }
         if (stack.getType() == Material.ITEM_FRAME) {
             stack.setItemMeta(InvisibleItemFramesLite.INVISIBLE_FRAME.getItemMeta());
-        } else if (stack.getType() == Material.GLOW_ITEM_FRAME) {
+        } else if (stack.getType().name().equals("GLOW_ITEM_FRAME")) {
+            // use name based check to avoid referencing GLOW_ITEM_FRAME directly
+            // which doesn't exist in versions before 1.17. this check will always fail
+            // on pre-1.17 versions.
             stack.setItemMeta(InvisibleItemFramesLite.INVISIBLE_GLOW_FRAME.getItemMeta());
         } else {
             return;
