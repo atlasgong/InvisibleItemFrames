@@ -123,7 +123,7 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
         addRecipeFromConfig(RECIPE_KEY, regularRecipe, INVISIBLE_FRAME);
 
         // add glow item frame only if on versions 1.17+
-        if (getServerVersion().patch >= 17) {
+        if (getServerVersion().minor >= 17) {
             config.addDefault("items.invisible_glow_item_frame.name", ChatColor.RESET + "Invisible Glow Item Frame");
             config.addDefault("recipes.invisible_glow_item_frame.count", 8);
             config.addDefault("recipes.invisible_glow_item_frame.glint", true);
