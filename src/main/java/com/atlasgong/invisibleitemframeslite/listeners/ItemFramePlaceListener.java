@@ -19,7 +19,7 @@ import org.bukkit.persistence.PersistentDataType;
  * When a player places an item frame tagged as "invisible", this class ensures that the
  * resulting entity is also marked as invisible using persistent data.
  */
-public class PlaceItemFrameListener implements Listener {
+public class ItemFramePlaceListener implements Listener {
 
     /** Key used to tag item frames as invisible via persistent data. */
     private final NamespacedKey isInvisibleKey;
@@ -35,7 +35,7 @@ public class PlaceItemFrameListener implements Listener {
      *
      * @param isInvisibleKey The {@link NamespacedKey} used to identify invisible item frames.
      */
-    public PlaceItemFrameListener(NamespacedKey isInvisibleKey) {
+    public ItemFramePlaceListener(NamespacedKey isInvisibleKey) {
         this.isInvisibleKey = isInvisibleKey;
     }
 
