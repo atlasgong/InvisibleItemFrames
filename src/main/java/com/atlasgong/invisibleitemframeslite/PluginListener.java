@@ -43,17 +43,14 @@ public class PluginListener implements Listener {
      */
     @EventHandler
     public void onHangingPlace(HangingPlaceEvent event) {
-        final EntityType entityType = event.getEntity().getType();
-        if (entityType != EntityType.ITEM_FRAME && entityType != EntityType.GLOW_ITEM_FRAME) {
-            return;
-        }
+        if (!(event.getEntity() instanceof ItemFrame frame)) return;
         final Location location = event.getBlock().getLocation();
         final BlockFace face = event.getBlockFace();
 
         if (location.equals(aboutToPlaceLocation) && face == aboutToPlaceFace) {
             aboutToPlaceLocation = null;
             aboutToPlaceFace = null;
-            event.getEntity().getPersistentDataContainer().set(isInvisibleKey,
+            frame.getPersistentDataContainer().set(isInvisibleKey,
                     PersistentDataType.BYTE, (byte) 1);
         }
     }
@@ -175,7 +172,7 @@ public class PluginListener implements Listener {
         final Boolean limitedCrafting = entity.getWorld().getGameRuleValue(GameRule.DO_LIMITED_CRAFTING);
         final boolean entityHasRecipe = entity.hasDiscoveredRecipe(InvisibleItemFrames.RECIPE_KEY);
         if (Boolean.TRUE.equals(limitedCrafting) && !entityHasRecipe) {
-             event.getInventory().setResult(new ItemStack(Material.AIR));
+            event.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }
 }
