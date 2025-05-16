@@ -31,7 +31,7 @@ public class ItemFramePlaceListener implements Listener {
     BlockFace aboutToPlaceFace = null;
 
     /**
-     * Constructs a new PlaceItemFrameListener.
+     * Constructs a new ItemFramePlaceListener.
      *
      * @param isInvisibleKey The {@link NamespacedKey} used to identify invisible item frames.
      */
