@@ -1,94 +1,43 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
-
 package com.atlasgong.invisibleitemframeslite;
 
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.List;
-
 public class Utils {
 
+    private Utils() {
+        throw new AssertionError("Utils should not be instantiated.");
+    }
+
     /**
-     * Returns whether the given ItemStack is an invisible item frame item.
+     * Checks if the given ItemStack represents one of this plugin’s invisible item-frame items.
      *
-     * @param item The stack to check.
-     * @return Whether the item stack is an invisible item frame item.
+     * @param item           the ItemStack to test; may be null
+     * @param isInvisibleKey the NamespacedKey used to mark invisibility in its PersistentDataContainer
+     * @return true if the item is non-null, has metadata, and carries the invisibility marker; false otherwise
      */
     public static boolean isInvisibleItemFrame(ItemStack item, NamespacedKey isInvisibleKey) {
-        if (item == null) {
-            return false;
-        }
+        if (item == null) return false;
         ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            return false;
-        }
+        if (meta == null) return false;
         return meta.getPersistentDataContainer().has(isInvisibleKey, PersistentDataType.BYTE);
     }
 
     /**
-     * Returns whether the given entity is an item frame
-     * which will become invisible when it has an item.
+     * Checks if the given Entity is an item frame (regular or glowing)
+     * that has been marked as invisible by this plugin.
      *
-     * @param entity The entity to check.
-     * @return Whether the entity is an invisible item frame.
+     * @param entity         the Entity to test; may be null or of any type
+     * @param isInvisibleKey the NamespacedKey used to mark invisibility in its PersistentDataContainer
+     * @return true if the entity is an ItemFrame and carries the invisibility marker; false otherwise
      */
     public static boolean isInvisibleItemFrame(Entity entity, NamespacedKey isInvisibleKey) {
-        if (entity == null) {
-            return false;
-        }
-        final EntityType type = entity.getType();
-        if (type != EntityType.ITEM_FRAME && type != EntityType.GLOW_ITEM_FRAME) {
-            return false;
-        }
-        return entity.getPersistentDataContainer().has(isInvisibleKey, PersistentDataType.BYTE);
-    }
-
-    /**
-     * Creates an invisible item frame.
-     *
-     * @param isInvisibleKey   The namespaced key to store invisibility status.
-     * @param name             The configurable display name for the item.
-     * @param lore             The configurable optional lore for the item.
-     * @param enchantmentGlint Whether the item should have an enchantment glint.
-     * @param glow             Whether to create a glow item frame instead of a regular item frame.
-     * @return An invisible item frame.
-     */
-    public static ItemStack createItem(NamespacedKey isInvisibleKey, String name, List<String> lore,
-                                       boolean enchantmentGlint,
-                                       boolean glow) {
-        ItemStack item = new ItemStack(glow ? Material.GLOW_ITEM_FRAME : Material.ITEM_FRAME, 1);
-
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(name);
-        meta.setLore(lore);
-        meta.setEnchantmentGlintOverride(enchantmentGlint ? true : null);
-        meta.getPersistentDataContainer().set(isInvisibleKey, PersistentDataType.BYTE, (byte) 1);
-        item.setItemMeta(meta);
-
-        return item;
-    }
-
-    /**
-     * Creates an invisible regular item frame.
-     *
-     * @param isInvisibleKey   The namespaced key to store invisibility status.
-     * @param name             The configurable display name for the item.
-     * @param lore             The configurable optional lore for the item.
-     * @param enchantmentGlint Whether the item should have an enchantment glint.
-     * @return An invisible regular item frame.
-     */
-    public static ItemStack createItem(NamespacedKey isInvisibleKey, String name, List<String> lore,
-                                       boolean enchantmentGlint) {
-        return createItem(isInvisibleKey, name, lore, enchantmentGlint, false);
+        return entity instanceof ItemFrame && entity.getPersistentDataContainer().has(isInvisibleKey,
+                PersistentDataType.BYTE);
     }
 
 }

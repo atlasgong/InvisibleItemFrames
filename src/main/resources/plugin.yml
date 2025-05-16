@@ -1,7 +1,7 @@
 name: InvisibleItemFramesLite
 version: ${project.version}
-main: com.atlasgong.invisibleitemframeslite.InvisibleItemFrames
-api-version: 1.21
+main: com.atlasgong.invisibleitemframeslite.InvisibleItemFramesLite
+api-version: 1.16
 description: Adds craftable invisible item frames for survival.
 authors:
   - Tiffnix

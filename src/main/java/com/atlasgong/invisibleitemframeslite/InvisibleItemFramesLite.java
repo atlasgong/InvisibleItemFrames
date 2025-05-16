@@ -4,6 +4,12 @@
 
 package com.atlasgong.invisibleitemframeslite;
 
+import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactory;
+import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactoryProvider;
+import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameBreakListener;
+import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameCraftListener;
+import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameInteractionListener;
+import com.atlasgong.invisibleitemframeslite.listeners.ItemFramePlaceListener;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,25 +26,36 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public final class InvisibleItemFrames extends JavaPlugin {
-    public static InvisibleItemFrames INSTANCE;
+public final class InvisibleItemFramesLite extends JavaPlugin {
+    public static InvisibleItemFramesLite INSTANCE;
     public static NamespacedKey RECIPE_KEY;
     public static NamespacedKey GLOW_RECIPE_KEY;
     public static ItemStack INVISIBLE_FRAME;
     public static ItemStack INVISIBLE_GLOW_FRAME;
     private static boolean firstLoad = true;
 
+    private ItemFrameFactory frameFactory;
+
     @Override
     public void onEnable() {
         INSTANCE = this;
 
+        // declare namespaced keys
         NamespacedKey isInvisibleKey = new NamespacedKey(this, "invisible");
         RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
         GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
 
-        PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new PluginListener(isInvisibleKey), this);
+        // get version specific item frame factory
+        frameFactory = ItemFrameFactoryProvider.get();
 
+        // register listeners
+        PluginManager pm = this.getServer().getPluginManager();
+        pm.registerEvents(new ItemFramePlaceListener(isInvisibleKey), this);
+        pm.registerEvents(new ItemFrameBreakListener(isInvisibleKey), this);
+        pm.registerEvents(new ItemFrameInteractionListener(isInvisibleKey), this);
+        pm.registerEvents(new ItemFrameCraftListener(isInvisibleKey), this);
+
+        // load config
         saveDefaultConfig();
         loadConfig(isInvisibleKey);
 
@@ -47,11 +64,6 @@ public final class InvisibleItemFrames extends JavaPlugin {
         // incl metrics for bStats
         int pluginId = 25837;
         @SuppressWarnings("unused") Metrics metrics = new Metrics(this, pluginId);
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
     }
 
     private void addRecipeFromConfig(NamespacedKey key, ConfigurationSection config, ItemStack item) {
@@ -110,14 +122,14 @@ public final class InvisibleItemFrames extends JavaPlugin {
         String rName = regularItem.getString("name");
         List<String> rLore = regularItem.getStringList("lore");
         boolean rEnchantmentGlint = regularItem.getBoolean("enchantment_glint");
-        INVISIBLE_FRAME = Utils.createItem(isInvisibleKey, rName, rLore, rEnchantmentGlint);
+        INVISIBLE_FRAME = frameFactory.create(isInvisibleKey, rName, rLore, rEnchantmentGlint, false);
 
         ConfigurationSection glowItem = config.getConfigurationSection("items.invisible_glow_item_frame");
         assert glowItem != null;
         String gName = glowItem.getString("name");
         List<String> gLore = glowItem.getStringList("lore");
         boolean gEnchantmentGlint = glowItem.getBoolean("enchantment_glint");
-        INVISIBLE_GLOW_FRAME = Utils.createItem(isInvisibleKey, gName, gLore, gEnchantmentGlint, true);
+        INVISIBLE_GLOW_FRAME = frameFactory.create(isInvisibleKey, gName, gLore, gEnchantmentGlint, true);
 
         ConfigurationSection regularRecipe = config.getConfigurationSection("recipes.invisible_item_frame");
         assert regularRecipe != null;
