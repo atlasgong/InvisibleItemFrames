@@ -25,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public final class InvisibleItemFramesLite extends JavaPlugin {
     public static InvisibleItemFramesLite INSTANCE;
@@ -40,13 +41,16 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
     public void onEnable() {
         INSTANCE = this;
 
+        Version sv = getServerVersion();
+        getLogger().log(Level.INFO, "Detected server running on " + sv.minor + "," + sv.patch);
+
         // declare namespaced keys
         NamespacedKey isInvisibleKey = new NamespacedKey(this, "invisible");
         RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
         GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
 
         // get version specific item frame factory
-        frameFactory = ItemFrameFactoryProvider.get();
+        frameFactory = ItemFrameFactoryProvider.get(sv.minor, sv.patch);
 
         // register listeners
         PluginManager pm = this.getServer().getPluginManager();
@@ -139,4 +143,21 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
         assert glowRecipe != null;
         addRecipeFromConfig(GLOW_RECIPE_KEY, glowRecipe, INVISIBLE_GLOW_FRAME);
     }
+
+    private Version getServerVersion() {
+        String[] parts = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+        int minor = Integer.parseInt(parts[1]);
+        int patch = Integer.parseInt(parts[2]);
+        return new Version(minor, patch);
+    }
+
+    private static class Version {
+        final int minor, patch;
+
+        Version(int minor, int patch) {
+            this.minor = minor;
+            this.patch = patch;
+        }
+    }
+
 }
