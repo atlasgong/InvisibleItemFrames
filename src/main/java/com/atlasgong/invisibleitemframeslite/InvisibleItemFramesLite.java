@@ -105,21 +105,11 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
         final FileConfiguration config = getConfig();
 
         config.addDefault("items.invisible_item_frame.name", ChatColor.RESET + "Invisible Item Frame");
-
-        config.addDefault("items.invisible_glow_item_frame.name", ChatColor.RESET + "Invisible Glow Item Frame");
-
         config.addDefault("recipes.invisible_item_frame.count", 8);
         config.addDefault("recipes.invisible_item_frame.glint", true);
         config.addDefault("recipes.invisible_item_frame.shape", Arrays.asList("FFF", "FAF", "FFF"));
         config.addDefault("recipes.invisible_item_frame.ingredients.F", "minecraft:item_frame");
-        config.addDefault("recipes.invisible_glow_item_frame.ingredients.A", "minecraft:phantom_membrane");
-
-        config.addDefault("recipes.invisible_glow_item_frame.count", 8);
-        config.addDefault("recipes.invisible_item_frame.glint", true);
-        config.addDefault("recipes.invisible_glow_item_frame.shape", Arrays.asList("FFF", "FAF", "FFF"));
-        config.addDefault("recipes.invisible_glow_item_frame.ingredients.F", "minecraft:glow_item_frame");
-        config.addDefault("recipes.invisible_glow_item_frame.ingredients.A", "minecraft:phantom_membrane");
-
+        config.addDefault("recipes.invisible_item_frame.ingredients.A", "minecraft:phantom_membrane");
 
         ConfigurationSection regularItem = config.getConfigurationSection("items.invisible_item_frame");
         assert regularItem != null;
@@ -128,20 +118,30 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
         boolean rEnchantmentGlint = regularItem.getBoolean("enchantment_glint");
         INVISIBLE_FRAME = frameFactory.create(isInvisibleKey, rName, rLore, rEnchantmentGlint, false);
 
-        ConfigurationSection glowItem = config.getConfigurationSection("items.invisible_glow_item_frame");
-        assert glowItem != null;
-        String gName = glowItem.getString("name");
-        List<String> gLore = glowItem.getStringList("lore");
-        boolean gEnchantmentGlint = glowItem.getBoolean("enchantment_glint");
-        INVISIBLE_GLOW_FRAME = frameFactory.create(isInvisibleKey, gName, gLore, gEnchantmentGlint, true);
-
         ConfigurationSection regularRecipe = config.getConfigurationSection("recipes.invisible_item_frame");
         assert regularRecipe != null;
         addRecipeFromConfig(RECIPE_KEY, regularRecipe, INVISIBLE_FRAME);
 
-        ConfigurationSection glowRecipe = config.getConfigurationSection("recipes.invisible_glow_item_frame");
-        assert glowRecipe != null;
-        addRecipeFromConfig(GLOW_RECIPE_KEY, glowRecipe, INVISIBLE_GLOW_FRAME);
+        // add glow item frame only if on versions 1.17+
+        if (getServerVersion().patch >= 17) {
+            config.addDefault("items.invisible_glow_item_frame.name", ChatColor.RESET + "Invisible Glow Item Frame");
+            config.addDefault("recipes.invisible_glow_item_frame.count", 8);
+            config.addDefault("recipes.invisible_glow_item_frame.glint", true);
+            config.addDefault("recipes.invisible_glow_item_frame.shape", Arrays.asList("FFF", "FAF", "FFF"));
+            config.addDefault("recipes.invisible_glow_item_frame.ingredients.F", "minecraft:glow_item_frame");
+            config.addDefault("recipes.invisible_glow_item_frame.ingredients.A", "minecraft:phantom_membrane");
+
+            ConfigurationSection glowItem = config.getConfigurationSection("items.invisible_glow_item_frame");
+            assert glowItem != null;
+            String gName = glowItem.getString("name");
+            List<String> gLore = glowItem.getStringList("lore");
+            boolean gEnchantmentGlint = glowItem.getBoolean("enchantment_glint");
+            INVISIBLE_GLOW_FRAME = frameFactory.create(isInvisibleKey, gName, gLore, gEnchantmentGlint, true);
+
+            ConfigurationSection glowRecipe = config.getConfigurationSection("recipes.invisible_glow_item_frame");
+            assert glowRecipe != null;
+            addRecipeFromConfig(GLOW_RECIPE_KEY, glowRecipe, INVISIBLE_GLOW_FRAME);
+        }
     }
 
     private Version getServerVersion() {
