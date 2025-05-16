@@ -7,14 +7,15 @@ package com.atlasgong.invisibleitemframeslite;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Hanging;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class PluginListener implements Listener {
@@ -69,36 +70,6 @@ public class PluginListener implements Listener {
         entity.setItemStack(stack);
     }
 
-
-    /**
-     * Whenever the player right clicks on an item frame, it potentially needs to
-     * have its visibility updated.
-     */
-    @EventHandler
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        final Entity entity = event.getRightClicked();
-        if (!Utils.isInvisibleItemFrame(entity, isInvisibleKey)) {
-            return;
-        }
-
-        final ItemFrame frame = (ItemFrame) entity;
-        new ItemFrameUpdateRunnable(frame).runTask(InvisibleItemFrames.INSTANCE);
-    }
-
-    /**
-     * When the player "damages" an item frame, the item it's holding is popped out.
-     * So it potentially needs to have its visibility updated.
-     */
-    @EventHandler
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
-        final Entity entity = event.getEntity();
-        if (!Utils.isInvisibleItemFrame(entity, isInvisibleKey)) {
-            return;
-        }
-
-        final ItemFrame frame = (ItemFrame) entity;
-        new ItemFrameUpdateRunnable(frame).runTask(InvisibleItemFrames.INSTANCE);
-    }
 
     /**
      * Spigot does not respect the doLimitedCrafting gamerule or allow permission

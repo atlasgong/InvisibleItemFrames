@@ -6,6 +6,7 @@ package com.atlasgong.invisibleitemframeslite;
 
 import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactory;
 import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactoryProvider;
+import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameInteractionListener;
 import com.atlasgong.invisibleitemframeslite.listeners.PlaceItemFrameListener;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -49,6 +50,7 @@ public final class InvisibleItemFrames extends JavaPlugin {
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(new PluginListener(isInvisibleKey), this);
         pm.registerEvents(new PlaceItemFrameListener(isInvisibleKey), this);
+        pm.registerEvents(new ItemFrameInteractionListener(isInvisibleKey), this);
 
         // load config
         saveDefaultConfig();
