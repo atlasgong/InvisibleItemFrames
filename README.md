@@ -66,7 +66,7 @@ Code is licensed under MPLv2, as per the original. See [LICENSE-MPL](./LICENSE-M
 Any contributions are assumed to be under this license.
 
 0. **Prerequisites**
-- Java SE 21
+- Java SE 8
 - Maven
 
 1. **Clone Repository**
