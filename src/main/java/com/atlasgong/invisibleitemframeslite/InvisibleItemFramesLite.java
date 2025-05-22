@@ -18,7 +18,9 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,6 +33,7 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
     public static InvisibleItemFramesLite INSTANCE;
     public static NamespacedKey RECIPE_KEY;
     public static NamespacedKey GLOW_RECIPE_KEY;
+    public static NamespacedKey GLOW_SHAPELESS_RECIPE_KEY;
     public static ItemStack INVISIBLE_FRAME;
     public static ItemStack INVISIBLE_GLOW_FRAME;
     private static boolean firstLoad = true;
@@ -47,7 +50,10 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
         // declare namespaced keys
         NamespacedKey isInvisibleKey = new NamespacedKey(this, "invisible");
         RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
-        GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
+        if (sv.minor >= 17) {
+            GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
+            GLOW_SHAPELESS_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame_shapeless");
+        }
 
         // get version specific item frame factory
         frameFactory = ItemFrameFactoryProvider.get(sv.minor, sv.patch);
@@ -59,9 +65,15 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
         pm.registerEvents(new ItemFrameInteractionListener(isInvisibleKey), this);
         pm.registerEvents(new ItemFrameCraftListener(isInvisibleKey), this);
 
-        // load config
+        // load config and register recipes
         saveDefaultConfig();
         loadConfig(isInvisibleKey);
+
+        if (sv.minor >= 17) {
+            // register shapeless glow item frame recipe
+            registerShapelessGlowRecipe(GLOW_SHAPELESS_RECIPE_KEY);
+        }
+
 
         firstLoad = false;
 
@@ -99,6 +111,19 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
                 getLogger().warning("Failed to add recipe " + config.getName() + ", because Spigot doesn't support reloading recipes.");
             }
         }
+    }
+
+    /**
+     * Adds a shapeless recipe to allow crafting a invisible item frame
+     * with a glow ink sac to make an invisible glow item frame.
+     *
+     * @param key plugin-scoped identifier for the recipe
+     */
+    private void registerShapelessGlowRecipe(NamespacedKey key) {
+        ShapelessRecipe recipe = new ShapelessRecipe(key, INVISIBLE_GLOW_FRAME.clone());
+        recipe.addIngredient(Utils.getNewMaterial("GLOW_INK_SAC", Material.INK_SAC));
+        recipe.addIngredient(new RecipeChoice.ExactChoice(INVISIBLE_FRAME.clone()));
+        Bukkit.addRecipe(recipe);
     }
 
     public void loadConfig(NamespacedKey isInvisibleKey) {

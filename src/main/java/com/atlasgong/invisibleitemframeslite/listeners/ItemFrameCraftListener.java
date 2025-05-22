@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 
 /**
  * Listener that controls crafting behavior for invisible item frames.
@@ -44,10 +45,12 @@ public class ItemFrameCraftListener implements Listener {
         }
 
         // disallow recursive crafting with invisible item frames
-        for (ItemStack is : event.getInventory().getMatrix()) {
-            if (Utils.isInvisibleItemFrame(is, isInvisibleKey)) {
-                event.getInventory().setResult(new ItemStack(Material.AIR));
-                return;
+        if (event.getRecipe() instanceof ShapedRecipe) {
+            for (ItemStack is : event.getInventory().getMatrix()) {
+                if (Utils.isInvisibleItemFrame(is, isInvisibleKey)) {
+                    event.getInventory().setResult(new ItemStack(Material.AIR));
+                    return;
+                }
             }
         }
 
