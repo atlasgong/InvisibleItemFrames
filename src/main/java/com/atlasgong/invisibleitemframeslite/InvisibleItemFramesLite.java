@@ -6,6 +6,7 @@ package com.atlasgong.invisibleitemframeslite;
 
 import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactory;
 import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameFactoryProvider;
+import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameRegistry;
 import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameBreakListener;
 import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameCraftListener;
 import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameInteractionListener;
@@ -30,50 +31,52 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public final class InvisibleItemFramesLite extends JavaPlugin {
+
     public static InvisibleItemFramesLite INSTANCE;
-    public static NamespacedKey RECIPE_KEY;
-    public static NamespacedKey GLOW_RECIPE_KEY;
-    public static NamespacedKey GLOW_SHAPELESS_RECIPE_KEY;
-    public static ItemStack INVISIBLE_FRAME;
-    public static ItemStack INVISIBLE_GLOW_FRAME;
     private static boolean firstLoad = true;
 
-    private ItemFrameFactory frameFactory;
+    private final NamespacedKey IS_INVISIBLE_KEY;
+
+    private final NamespacedKey RECIPE_KEY;
+    private NamespacedKey GLOW_RECIPE_KEY;
+    private NamespacedKey GLOW_SHAPELESS_RECIPE_KEY;
+
+    public InvisibleItemFramesLite() {
+        INSTANCE = this;
+        IS_INVISIBLE_KEY = new NamespacedKey(this, "invisible");
+        RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
+    }
 
     @Override
     public void onEnable() {
-        INSTANCE = this;
-
         Version sv = getServerVersion();
         getLogger().log(Level.INFO, "Detected server running on " + sv.minor + "," + sv.patch);
 
-        // declare namespaced keys
-        NamespacedKey isInvisibleKey = new NamespacedKey(this, "invisible");
-        RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
+        // declare namespaced keys for glow items
         if (sv.minor >= 17) {
             GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
             GLOW_SHAPELESS_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame_shapeless");
         }
 
-        // get version specific item frame factory
-        frameFactory = ItemFrameFactoryProvider.get(sv.minor, sv.patch);
+        // instantiate registry
+        ItemFrameFactory versionSpecificFactory = ItemFrameFactoryProvider.get(sv.minor, sv.patch);
+        ItemFrameRegistry.init(versionSpecificFactory);
 
         // register listeners
         PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new ItemFramePlaceListener(isInvisibleKey), this);
-        pm.registerEvents(new ItemFrameBreakListener(isInvisibleKey), this);
-        pm.registerEvents(new ItemFrameInteractionListener(isInvisibleKey), this);
-        pm.registerEvents(new ItemFrameCraftListener(isInvisibleKey), this);
+        pm.registerEvents(new ItemFramePlaceListener(IS_INVISIBLE_KEY), this);
+        pm.registerEvents(new ItemFrameBreakListener(IS_INVISIBLE_KEY), this);
+        pm.registerEvents(new ItemFrameInteractionListener(IS_INVISIBLE_KEY), this);
+        pm.registerEvents(new ItemFrameCraftListener(IS_INVISIBLE_KEY), this);
 
         // load config and register recipes
         saveDefaultConfig();
-        loadConfig(isInvisibleKey);
+        loadConfig(IS_INVISIBLE_KEY);
 
         if (sv.minor >= 17) {
             // register shapeless glow item frame recipe
             registerShapelessGlowRecipe(GLOW_SHAPELESS_RECIPE_KEY);
         }
-
 
         firstLoad = false;
 
@@ -114,19 +117,25 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
     }
 
     /**
-     * Adds a shapeless recipe to allow crafting a invisible item frame
+     * Adds a shapeless recipe to allow crafting an invisible item frame
      * with a glow ink sac to make an invisible glow item frame.
      *
      * @param key plugin-scoped identifier for the recipe
      */
     private void registerShapelessGlowRecipe(NamespacedKey key) {
-        ShapelessRecipe recipe = new ShapelessRecipe(key, INVISIBLE_GLOW_FRAME.clone());
+        ItemStack glowIs = ItemFrameRegistry.getInstance().getGlowInvisibleFrame();
+        ItemStack regIs = ItemFrameRegistry.getInstance().getRegularInvisibleFrame();
+
+        ShapelessRecipe recipe = new ShapelessRecipe(key, glowIs.clone());
         recipe.addIngredient(Utils.getNewMaterial("GLOW_INK_SAC", Material.INK_SAC));
-        recipe.addIngredient(new RecipeChoice.ExactChoice(INVISIBLE_FRAME.clone()));
+
+        //noinspection deprecation, undeprecated in 1.16.5
+        recipe.addIngredient(new RecipeChoice.ExactChoice(regIs.clone()));
+
         Bukkit.addRecipe(recipe);
     }
 
-    public void loadConfig(NamespacedKey isInvisibleKey) {
+    public void loadConfig(NamespacedKey IS_INVISIBLE_KEY) {
         final FileConfiguration config = getConfig();
 
         config.addDefault("items.invisible_item_frame.name", ChatColor.RESET + "Invisible Item Frame");
@@ -140,12 +149,15 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
         assert regularItem != null;
         String rName = regularItem.getString("name");
         List<String> rLore = regularItem.getStringList("lore");
-        boolean rEnchantmentGlint = regularItem.getBoolean("enchantment_glint");
-        INVISIBLE_FRAME = frameFactory.create(isInvisibleKey, rName, rLore, rEnchantmentGlint, false);
+        boolean rEnchantmentGlint = regularItem.getBoolean("enchantment_g" +
+                "lint");
+
+        // register frame with registry
+        ItemFrameRegistry.getInstance().registerRegularInvisibleItemFrame(IS_INVISIBLE_KEY, rName, rLore, rEnchantmentGlint);
 
         ConfigurationSection regularRecipe = config.getConfigurationSection("recipes.invisible_item_frame");
         assert regularRecipe != null;
-        addRecipeFromConfig(RECIPE_KEY, regularRecipe, INVISIBLE_FRAME);
+        addRecipeFromConfig(RECIPE_KEY, regularRecipe, ItemFrameRegistry.getInstance().getRegularInvisibleFrame());
 
         // add glow item frame only if on versions 1.17+
         if (getServerVersion().minor >= 17) {
@@ -161,11 +173,13 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
             String gName = glowItem.getString("name");
             List<String> gLore = glowItem.getStringList("lore");
             boolean gEnchantmentGlint = glowItem.getBoolean("enchantment_glint");
-            INVISIBLE_GLOW_FRAME = frameFactory.create(isInvisibleKey, gName, gLore, gEnchantmentGlint, true);
+
+            // register frame with registry
+            ItemFrameRegistry.getInstance().registerGlowInvisibleItemFrame(IS_INVISIBLE_KEY, gName, gLore, gEnchantmentGlint);
 
             ConfigurationSection glowRecipe = config.getConfigurationSection("recipes.invisible_glow_item_frame");
             assert glowRecipe != null;
-            addRecipeFromConfig(GLOW_RECIPE_KEY, glowRecipe, INVISIBLE_GLOW_FRAME);
+            addRecipeFromConfig(GLOW_RECIPE_KEY, glowRecipe, ItemFrameRegistry.getInstance().getGlowInvisibleFrame());
         }
     }
 

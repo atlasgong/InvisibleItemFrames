@@ -4,8 +4,8 @@
 
 package com.atlasgong.invisibleitemframeslite.listeners;
 
-import com.atlasgong.invisibleitemframeslite.InvisibleItemFramesLite;
 import com.atlasgong.invisibleitemframeslite.Utils;
+import com.atlasgong.invisibleitemframeslite.itemframe.ItemFrameRegistry;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * Listener that restores invisibility to item frame items when they are broken and dropped.
@@ -69,16 +70,28 @@ public class ItemFrameBreakListener implements Listener {
         final Item entity = event.getEntity();
         final ItemStack stack = entity.getItemStack();
         final long now = entity.getWorld().getFullTime();
+
         if (now != hangingBrokenAtTick) {
             return;
         }
+
+        ItemMeta regularInvisibleItemFrameMeta = ItemFrameRegistry
+                .getInstance()
+                .getRegularInvisibleFrame()
+                .getItemMeta();
+
+        ItemMeta glowInvisibleItemFrameMeta = ItemFrameRegistry
+                .getInstance()
+                .getGlowInvisibleFrame()
+                .getItemMeta();
+
         if (stack.getType() == Material.ITEM_FRAME) {
-            stack.setItemMeta(InvisibleItemFramesLite.INVISIBLE_FRAME.getItemMeta());
+            stack.setItemMeta(regularInvisibleItemFrameMeta);
         } else if (stack.getType().name().equals("GLOW_ITEM_FRAME")) {
             // use name based check to avoid referencing GLOW_ITEM_FRAME directly
             // which doesn't exist in versions before 1.17. this check will always fail
             // on pre-1.17 versions.
-            stack.setItemMeta(InvisibleItemFramesLite.INVISIBLE_GLOW_FRAME.getItemMeta());
+            stack.setItemMeta(glowInvisibleItemFrameMeta);
         } else {
             return;
         }

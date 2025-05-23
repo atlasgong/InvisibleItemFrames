@@ -74,7 +74,7 @@ public class ItemFrameInteractionListener implements Listener {
      * and invisible again when holding an item.
      */
     private static class ItemFrameUpdateRunnable extends BukkitRunnable {
-        ItemFrame itemFrame;
+        final ItemFrame itemFrame;
 
         ItemFrameUpdateRunnable(ItemFrame itemFrame) {
             this.itemFrame = itemFrame;
