@@ -7,7 +7,6 @@ import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameBreakListener;
 import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameCraftListener;
 import com.atlasgong.invisibleitemframeslite.listeners.ItemFrameInteractionListener;
 import com.atlasgong.invisibleitemframeslite.listeners.ItemFramePlaceListener;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
