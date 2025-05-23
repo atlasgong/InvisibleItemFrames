@@ -1,11 +1,8 @@
 package com.atlasgong.invisibleitemframeslite.listeners;
 
-import com.atlasgong.invisibleitemframeslite.InvisibleItemFramesLite;
 import com.atlasgong.invisibleitemframeslite.Utils;
-import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -52,14 +49,6 @@ public class ItemFrameCraftListener implements Listener {
                     return;
                 }
             }
-        }
-
-        // enforce doLimitedCrafting for players who haven’t unlocked the custom recipe.
-        final HumanEntity entity = event.getView().getPlayer();
-        final Boolean limitedCrafting = entity.getWorld().getGameRuleValue(GameRule.DO_LIMITED_CRAFTING);
-        final boolean entityHasRecipe = entity.hasDiscoveredRecipe(InvisibleItemFramesLite.RECIPE_KEY);
-        if (Boolean.TRUE.equals(limitedCrafting) && !entityHasRecipe) {
-            event.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }
 }
