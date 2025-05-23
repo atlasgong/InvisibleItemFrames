@@ -17,9 +17,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +55,16 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
     private final NamespacedKey SHAPELESS_GLOW_RECIPE_KEY;
 
     public InvisibleItemFramesLite() {
+        super();
+        INSTANCE = this;
+        IS_INVISIBLE_KEY = new NamespacedKey(this, "invisible");
+        REGULAR_RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
+        GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
+        SHAPELESS_GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame_shapeless");
+    }
+
+    protected InvisibleItemFramesLite(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
         INSTANCE = this;
         IS_INVISIBLE_KEY = new NamespacedKey(this, "invisible");
         REGULAR_RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
