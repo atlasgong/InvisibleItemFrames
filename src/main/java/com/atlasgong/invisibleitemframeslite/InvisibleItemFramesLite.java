@@ -32,27 +32,22 @@ public final class InvisibleItemFramesLite extends JavaPlugin {
     private static boolean firstLoad = true;
 
     private final NamespacedKey IS_INVISIBLE_KEY;
-
     private final NamespacedKey RECIPE_KEY;
-    private NamespacedKey GLOW_RECIPE_KEY;
-    private NamespacedKey GLOW_SHAPELESS_RECIPE_KEY;
+    private final NamespacedKey GLOW_RECIPE_KEY;
+    private final NamespacedKey GLOW_SHAPELESS_RECIPE_KEY;
 
     public InvisibleItemFramesLite() {
         INSTANCE = this;
         IS_INVISIBLE_KEY = new NamespacedKey(this, "invisible");
         RECIPE_KEY = new NamespacedKey(this, "invisible_item_frame");
+        GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
+        GLOW_SHAPELESS_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame_shapeless");
     }
 
     @Override
     public void onEnable() {
         Version sv = getServerVersion();
         getLogger().log(Level.INFO, "Detected server running on " + sv.minor + "," + sv.patch);
-
-        // declare namespaced keys for glow items
-        if (sv.minor >= 17) {
-            GLOW_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame");
-            GLOW_SHAPELESS_RECIPE_KEY = new NamespacedKey(this, "invisible_glow_item_frame_shapeless");
-        }
 
         // instantiate registry
         ItemFrameFactory versionSpecificFactory = ItemFrameFactoryProvider.get(sv.minor, sv.patch);
